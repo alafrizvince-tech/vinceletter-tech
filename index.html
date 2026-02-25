@@ -1,1 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Letter For You ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Floating Hearts Animation */
+        .heart-float {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0;
+            pointer-events: none;
+            animation: float-up 3s ease-in forwards;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) translateX(100px);
+            }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .letter-envelope {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .letter-header {
+            background: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .letter-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .letter-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .heart-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        .letter-content {
+            padding: 40px 30px;
+            color: #333;
+            line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .letter-content p {
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: justify;
+        }
+
+        .letter-content .opening {
+            font-weight: bold;
+            color: #FF6B9D;
+            font-size: 18px;
+        }
+
+        .letter-content .closing {
+            font-weight: bold;
+            color: #FF6B9D;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .signature {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 32px;
+            color: #FF6B9D;
+            margin-top: 15px;
+        }
+
+        .letter-footer {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 2px dashed #FFB6C1;
+        }
+
+        .date {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: white;
+            color: #FF6B9D;
+            border: 2px solid #FF6B9D;
+        }
+
+        .btn.secondary:hover {
+            background: #FFE0E9;
+        }
+
+        /* Scrollbar Styling */
+        .letter-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .letter-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .letter-content::-webkit-scrollbar-thumb {
+            background: #FF6B9D;
+            border-radius: 3px;
+        }
+
+        .letter-content::-webkit-scrollbar-thumb:hover {
+            background: #C44569;
+        }
+
+        /* Modal for Full Letter */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #FF6B9D;
+        }
+
+        .modal-content h2 {
+            color: #FF6B9D;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .letter-header h1 {
+                font-size: 28px;
+            }
+
+            .letter-content {
+                padding: 25px 20px;
+                font-size: 14px;
+            }
+
+            .button-group {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="letter-envelope">
+            <div class="letter-header">
+                <div class="heart-icon">❤️</div>
+                <h1>A Letter For You</h1>
+                <p>Written with all my love</p>
+            </div>
+
+            <div class="letter-content" id="letterContent">
+                <p class="opening">My Dearest,</p>
+
+                <p>
+                    I wanted to take a moment to tell you how much you mean to me. Every day with you is a blessing, 
+                    and I find myself grateful for the smallest moments we share together.
+                </p>
+
+                <p>
+                    Your smile lights up my world in ways I never thought possible. The way you laugh, the way you 
+                    care, the way you make me feel seen and understood—it all means everything to me. You've brought 
+                    so much joy and color into my life.
+                </p>
+
+                <p>
+                    I admire your strength, your kindness, and your beautiful heart. The way you navigate life with 
+                    grace and compassion inspires me every single day. Thank you for being you, and thank you for 
+                    letting me be part of your journey.
+                </p>
+
+                <p>
+                    I want you to know that my love for you grows deeper with each passing day. It's not just the 
+                    grand moments we share, but the quiet ones too—the ones where we simply exist together, perfectly 
+                    content in each other's presence. Those are the moments that matter most to me.
+                </p>
+
+                <p>
+                    You are my best friend, my confidant, my home. Being with you feels like coming home to a place 
+                    I never knew I was looking for. I cherish every memory we've created and every moment we're yet 
+                    to share.
+                </p>
+
+                <p>
+                    Thank you for loving me, for believing in us, and for being the most wonderful person in my life. 
+                    I promise to love you with all my heart, to support you, to make you laugh, and to be there for 
+                    you always.
+                </p>
+
+                <p class="closing">
+                    Forever yours,<br>
+                    <span class="signature">Your Love ❤️</span>
+                </p>
+            </div>
+
+            <div class="letter-footer">
+                <div class="date" id="currentDate"></div>
+                <div class="button-group">
+                    <button class="btn" onclick="createConfetti()">💕 Send Love</button>
+                    <button class="btn secondary" onclick="playMusic()">🎵 Play Music</button>
+                    <button class="btn secondary" onclick="shareMessage()">📤 Share</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        function setDate() {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('en-US', options);
+            document.getElementById('currentDate').textContent = today;
+        }
+
+        // Create floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = window.innerHeight + 'px';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['❤️', '💕', '💖', '✨', '🌹'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.innerHTML = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-20px';
+                    confetti.style.fontSize = Math.random() * 20 + 20 + 'px';
+                    confetti.style.animation = `confetti-fall ${Math.random() * 2 + 2}s ease-in forwards`;
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+
+            // Create floating hearts
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => createFloatingHeart(), i * 100);
+            }
+        }
+
+        // Add confetti animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confetti-fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Play background music (simulated)
+        function playMusic() {
+            const message = "🎵 Playing romantic music... (In a real app, this would play actual music)";
+            alert(message);
+            console.log("🎵 Music would play here");
+        }
+
+        // Share message
+        function shareMessage() {
+            const message = "I received the most beautiful love letter! ❤️";
+            if (navigator.share) {
+                navigator.share({
+                    title: 'A Letter For You ❤️',
+                    text: message,
+                    url: window.location.href
+                }).catch(err => console.log('Share cancelled'));
+            } else {
+                alert('Message: ' + message);
+                console.log('Share API not available');
+            }
+        }
+
+        // Typewriter effect for opening
+        function typewriterEffect() {
+            const element = document.querySelector('.opening');
+            const text = element.textContent;
+            element.textContent = '';
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(type, 50);
+                }
+            }
+
+            type();
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            setDate();
+            typewriterEffect();
+            createFloatingHeart();
+        });
+
+        // Create floating hearts periodically
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                createFloatingHeart();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
